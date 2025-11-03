@@ -21,6 +21,7 @@
 	(multislot nombre)
 	(multislot direccion)
 	(slot telefono)
+	(slot tipo-cliente)
 )
 
 (deftemplate accesorios
@@ -31,10 +32,25 @@
 	(slot precio)
 )
 
+(deftemplate inventario
+    (slot producto-id)
+    (slot marca)
+    (slot modelo)
+    (slot stock))
+
 (deftemplate orden
-	(slot orden-id)
-	(slot cliente-id)
-)
+    (slot orden-id)
+    (slot cliente-id)
+    (multislot productos-en-orden)
+    (multislot marcas-en-orden)
+    (multislot modelos-en-orden)
+    (multislot tipos-en-orden)
+    (slot banco-tarjeta)
+    (slot tipo-tarjeta)
+    (slot grupo-tarjeta)
+    (slot tipo-cliente)   
+    (slot total-compra)
+    (slot quantity))  
 
 (deftemplate tarjetas
 	(slot tarjeta-id)
@@ -42,6 +58,7 @@
 	(slot grupo)
 	(slot tipo)
 	(slot fechaexp)
+	(slot grupo-tarjeta)
 )
 
 (deftemplate vales

@@ -1,115 +1,116 @@
-(defrule visa-apple
-   (line-item (orden-id ?oid) (cliente-id ?cid) (smartphone-id ?sid) (tarjeta-id ?tid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (smartphones (smartphone-id ?sid) (marca apple) (nombre $?pname))
-   (tarjetas (tarjeta-id ?tid) (banco ?banco) (grupo ?grupo))
+(defrule promo-cantidad-apple
+   (orden (marcas-en-orden $?m&:(member$ Apple $?m))
+          (modelos-en-orden $?mod&:(member$ iPhone16 $?mod))
+          (quantity ?q&:(> ?q 10))
+          (tipo-cliente menudista))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Producto: " $?pname " — Tarjeta: " ?banco " " ?grupo crlf
-      ">> 8% de descuento pagando con VISA en productos Apple." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Menudista Apple: 10% de descuento por más de 10 unidades." crlf))
 
-(defrule promo-bbva-visa
-   (line-item (orden-id ?oid) (cliente-id ?cid) (smartphone-id ?sid) (tarjeta-id ?tid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (smartphones (smartphone-id ?sid) (nombre $?pname))
-   (tarjetas (tarjeta-id ?tid) (banco bbva) (grupo visa))
+(defrule promo-cantidad-apple-mayorista
+   (orden (marcas-en-orden $?m&:(member$ Apple $?m))
+          (modelos-en-orden $?mod&:(member$ iPhone16 $?mod))
+          (quantity ?q&:(> ?q 10))
+          (tipo-cliente mayorista))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Producto: " $?pname " — Tarjeta: BBVA VISA" crlf
-      ">> Promoción: 5% de cashback pagando con BBVA VISA." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Mayorista Apple: 15% de descuento por más de 10 unidades." crlf))
 
-(defrule combo-macbook-iphone
-   (line-item (orden-id ?oid) (cliente-id ?cid) (smartphone-id ?sid) (computadora-id ?cid2))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (smartphones (smartphone-id ?sid) (modelo iPhone16) (nombre $?pname))
-   (computadoras (computadora-id ?cid2) (modelo MacBookAir) (nombre $?cname))
+(defrule promo-samsung-nuevo
+   (orden (marcas-en-orden $?m&:(member$ Samsung $?m))
+          (tipo-cliente nuevo))
    =>
-   (assert (vales (vale-id v001) (des "Vale de $100 por cada $1000 de compra")))
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Productos: " $?pname ", " $?cname crlf
-      ">> Generado: vale de $100 por cada $1000 de compra." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Nuevo cliente Samsung: 5% de descuento." crlf))
 
-(defrule descuento-accesorios-smartphone
-   (line-item (orden-id ?oid) (cliente-id ?cid) (smartphone-id ?sid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (smartphones (smartphone-id ?sid) (nombre $?pname))
+(defrule promo-xiaomi-estudiante
+   (orden (marcas-en-orden $?m&:(member$ Xiaomi $?m))
+          (tipo-cliente estudiante))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Producto: " $?pname crlf
-      ">> Descuento del 15% en funda y mica por comprar smartphone." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Xiaomi estudiantes: 12% de descuento con credencial." crlf))
 
-(defrule promo-mastercard
-   (line-item (orden-id ?oid) (cliente-id ?cid) (tarjeta-id ?tid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (tarjetas (tarjeta-id ?tid) (grupo mastercard) (banco ?banco))
+(defrule promo-general-smartphone
+   (orden (tipos-en-orden $?t&:(member$ smartphone $?t)))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Tarjeta: " ?banco " MasterCard" crlf
-      ">> Descuento del 5% pagando con MasterCard." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Oferta general: 15% de descuento en funda y mica." crlf))
 
-(defrule promo-note21-liverpool
-   (line-item (orden-id ?oid) (cliente-id ?cid) (smartphone-id ?sid) (tarjeta-id ?tid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (smartphones (smartphone-id ?sid) (marca samsung) (modelo Note21) (nombre $?pname))
-   (tarjetas (tarjeta-id ?tid) (banco liverpool) (grupo visa))
-   =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Producto: " $?pname " — Tarjeta: Liverpool VISA" crlf
-      ">> Oferta: 12 meses sin intereses con Liverpool VISA al comprar Note21." crlf
-      "-------------------------------------------------------------" crlf))
 
-(defrule promo-macbookpro-santander
-   (line-item (orden-id ?oid) (cliente-id ?cid) (computadora-id ?cid2) (tarjeta-id ?tid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (computadoras (computadora-id ?cid2) (modelo MacBookPro) (nombre $?cname))
-   (tarjetas (tarjeta-id ?tid) (banco santander))
+(defrule promo-banamex-iphone16
+   (orden (banco-tarjeta banamex)
+          (modelos-en-orden $?mod&:(member$ iPhone16 $?mod)))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Producto: " $?cname " — Tarjeta: Santander" crlf
-      ">> Oferta: 18 meses sin intereses con Santander." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Banamex + iPhone16: 3 meses sin intereses." crlf))
 
-(defrule combo-accesorio-smartphone
-   (line-item (orden-id ?oid) (cliente-id ?cid) (smartphone-id ?sid) (accesorio-id ?aid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (smartphones (smartphone-id ?sid) (nombre $?pname))
-   (accesorios (accesorio-id ?aid) (nombre $?aname))
+(defrule promo-liverpool
+   (orden (grupo-tarjeta liverpool)
+          (marcas-en-orden $?m&:(member$ Samsung $?m)))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Productos: " $?pname " + " $?aname crlf
-      ">> Combo: 20% de descuento en funda al comprar smartphone." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " Liverpool + Samsung: 10% de descuento en pago total." crlf))
 
-(defrule vale-efectivo
-   (line-item (orden-id ?oid) (cliente-id ?cid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
+(defrule promo-bbva-general
+   (orden (banco-tarjeta bbva))
    =>
-   (assert (vales (vale-id v004) (des "Vale del 5% por pago en efectivo")))
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      ">> Vale generado: 5% de devolución por pago en efectivo." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t " BBVA: Envío gratuito en todas tus compras." crlf))
 
-(defrule descuento-accesorios
-   (line-item (orden-id ?oid) (cliente-id ?cid) (accesorio-id ?aid))
-   (cliente (cliente-id ?cid) (nombre $?nombre))
-   (accesorios (accesorio-id ?aid) (precio ?p&:(> ?p 2000)) (nombre $?aname))
+(defrule combo-macbookair-iphone16
+   (orden (marcas-en-orden $?m&:(member$ Apple $?m))
+          (modelos-en-orden $?mod))
+   (test (and (member$ MacBookAir $?mod) (member$ iPhone16 $?mod)))
    =>
-   (printout t crlf
-      "[ORDEN: " ?oid "] Cliente: " $?nombre " (ID: " ?cid ")" crlf
-      "Accesorio: " $?aname " (Precio: $" ?p ")" crlf
-      ">> Descuento del 10% en accesorios mayores a $2000." crlf
-      "-------------------------------------------------------------" crlf))
+   (printout t "Combo Apple: MacBook Air + iPhone16 — Descuento del 10% en accesorios." crlf)
+)
+
+(defrule combo-iphone16-airpods
+   (orden (marcas-en-orden $?m&:(member$ Apple $?m))
+          (modelos-en-orden $?mod))
+   (test (and (member$ iPhone16 $?mod) (member$ AirPods $?mod)))
+   =>
+   (printout t "Combo Apple: iPhone16 + AirPods — 15% de descuento en total." crlf)
+)
+
+(defrule combo-samsung-tv-smartphone
+   (orden (marcas-en-orden $?m&:(member$ Samsung $?m))
+          (tipos-en-orden $?tipos))
+   (test (and (member$ tv $?tipos) (member$ smartphone $?tipos)))
+   =>
+   (printout t "Combo Samsung: TV + Smartphone — Envío gratis + 10% de descuento." crlf)
+)
+
+
+(defrule recomendacion-apple
+   (orden (marcas-en-orden $?m&:(member$ Apple $?m)))
+   =>
+   (printout t " Recomendación: añade funda o AppleCare." crlf))
+
+(defrule recomendacion-samsung
+   (orden (marcas-en-orden $?m&:(member$ Samsung $?m)))
+   =>
+   (printout t " Recomendación: añade Galaxy Buds o funda protectora." crlf))
+
+(defrule recomendacion-xiaomi
+   (orden (marcas-en-orden $?m&:(member$ Xiaomi $?m)))
+   =>
+   (printout t " Recomendación: añade powerbank o audífonos Redmi." crlf))
+
+
+(defrule alerta-stock-bajo
+   (inventario (marca ?marca) (modelo ?modelo) (stock ?s&:(< ?s 10)))
+   =>
+   (printout t " Stock bajo de " ?marca " " ?modelo " (" ?s " unidades)." crlf))
+
+(defrule cliente-frecuente
+   (orden (tipo-cliente frecuente))
+   =>
+   (printout t "Cliente frecuente: 10% de descuento adicional." crlf))
+
+
+
+(defrule actualizar-stock
+   ?inv <- (inventario (marca ?marca) (modelo ?modelo) (stock ?s))
+   ?ord <- (orden (marcas-en-orden $?m&:(member$ ?marca $?m))
+                  (modelos-en-orden $?mod&:(member$ ?modelo $?mod))
+                  (quantity ?q))
+   =>
+   (bind ?nuevo (- ?s ?q))
+   (if (>= ?nuevo 0)
+       then (modify ?inv (stock ?nuevo))
+            (printout t " Stock actualizado: " ?marca " " ?modelo
+                      " → " ?s " a " ?nuevo crlf)
+       else (printout t " Error: stock insuficiente para " ?modelo crlf)))
