@@ -22,7 +22,7 @@
     (posicion centro)
 )
 
-;; ESTADO INICIAL: Mono en ventana, Caja en puerta (Según la imagen)
+;; ESTADO INICIAL: Mono en ventana, Caja en puerta 
 (deffacts estado-inicial
     (estado (posicionMono ventana)
             (nivelMono suelo)
@@ -49,18 +49,18 @@
                       (tienePlatano ?T)))
 )
 
-;; 1. Caminar hacia la caja (que está en la puerta)
+;; 1. Caminar hacia la caja 
 (defrule caminar-a-caja
     (declare (salience 50))
     ?s <- (estado (posicionMono ?M)
                   (nivelMono suelo)
                   (posicionCaja ?C)
                   (tienePlatano no))
-    ?meta <- (meta-actual ir-a-caja) ; <--- CORRECCIÓN APLICADA
+    ?meta <- (meta-actual ir-a-caja)
     (test (neq ?M ?C))
     =>
     (retract ?s)
-    (retract ?meta) ; <--- CORRECCIÓN APLICADA
+    (retract ?meta) ;
     (assert (estado (posicionMono ?C)
                     (nivelMono suelo)
                     (posicionCaja ?C)
@@ -91,11 +91,11 @@
                   (nivelMono suelo)
                   (posicionCaja ?P)
                   (tienePlatano no))
-    ?meta <- (meta-actual empujar) ; <--- CORRECCIÓN APLICADA
+    ?meta <- (meta-actual empujar) ; 
     (test (neq ?P centro))
     =>
     (retract ?s)
-    (retract ?meta) ; <--- CORRECCIÓN APLICADA
+    (retract ?meta) ;
     (assert (estado (posicionMono centro)
                     (nivelMono suelo)
                     (posicionCaja centro)
@@ -124,14 +124,14 @@
                   (nivelMono suelo)
                   (posicionCaja centro)
                   (tienePlatano no))
-    ?meta <- (meta-actual trepar) ; <--- CORRECCIÓN APLICADA
+    ?meta <- (meta-actual trepar) ; 
     (not (visitado (posicionMono centro)
                    (nivelMono encima)
                    (posicionCaja centro)
                    (tienePlatano no)))
     =>
     (retract ?s)
-    (retract ?meta) ; <--- CORRECCIÓN APLICADA
+    (retract ?meta) ; 
     (assert (estado (posicionMono centro)
                     (nivelMono encima)
                     (posicionCaja centro)
@@ -147,10 +147,10 @@
                   (nivelMono encima)
                   (posicionCaja centro)
                   (tienePlatano no))
-    ?meta <- (meta-actual agarrar-platano) ; <--- CORRECCIÓN APLICADA
+    ?meta <- (meta-actual agarrar-platano) ;
     =>
     (retract ?s)
-    (retract ?meta) ; <--- CORRECCIÓN APLICADA
+    (retract ?meta) ; 
     (assert (estado (posicionMono centro)
                     (nivelMono encima)
                     (posicionCaja centro)
